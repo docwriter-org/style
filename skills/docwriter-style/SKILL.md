@@ -1,28 +1,21 @@
 ---
 name: docwriter-style
 description: >-
-  The user's writing style. Applies learned habits when drafting or revising
-  prose. If no style profile exists yet, prompts the user for writing samples
-  and builds one.
+  Build a writing style skill from your own prose. Analyzes your writing at the
+  word, sentence, and passage level and produces a portable author-style skill
+  that Claude Code loads automatically. Run /docwriter-style to start, or let
+  it trigger when you ask to learn or build a writing style.
 ---
 
-# Writing style
+# Build a writing style skill
 
-First, check whether a profile exists: try to Read
-`~/.claude/skills/docwriter-style/references/propositions.json`.
+This skill is a generator. It reads your writing, distills your habits, checks
+each one with you, and writes a separate `author-style` skill to
+`~/.claude/skills/author-style/` that Claude Code picks up automatically in
+every project.
 
-If it exists and contains propositions, read
-`~/.claude/skills/docwriter-style/references/style-profile.md` and follow
-those instructions when drafting or revising prose. The user's own rules and
-requests always win. Done — stop here.
-
-If the file is missing or empty, the user has no style profile yet. Tell them
-and ask for writing samples so you can build one. Follow the learning pipeline
-below.
-
----
-
-# Learning pipeline
+If `~/.claude/skills/author-style/SKILL.md` already exists, tell the user they
+already have a style skill and ask if they want to rebuild it from new samples.
 
 ## 1. Gather sources
 
@@ -103,18 +96,22 @@ Batch 3-4 per question to keep it moving.
 
 Tell the user how many survived.
 
-## 4. Write the profile
+## 4. Write the author-style skill
 
-Write the results into this skill's own directory at
-`~/.claude/skills/docwriter-style/references/`. Create the directory if it
-does not exist.
+Write a complete skill to `~/.claude/skills/author-style/`. Create the
+directory if it does not exist.
 
-### references/style-profile.md
-
-The style instructions that future invocations will follow. Format:
+### SKILL.md
 
 ```markdown
-# Learned style profile
+---
+name: author-style
+description: >-
+  Apply the learned writing style when drafting or revising prose. Follow these
+  habits where they fit; ignore any that would make the sentence worse.
+---
+
+# Learned author style
 
 These are tendencies learned from a few pieces of writing, not rules. Follow
 them where they fit; ignore any that would make the sentence worse. A draft
@@ -122,6 +119,8 @@ that mechanically hits every instruction reads like an imitation.
 
 Do not copy subject matter, facts, or turns of phrase from the examples —
 only how the sentences are built.
+
+The user's own rules and requests always win over these instructions.
 
 ## <family heading>
 
@@ -132,10 +131,12 @@ only how the sentences are built.
   > <another example>
 
   > <another example>
+
+(repeat for each proposition, grouped by level: words, sentences, passages)
 ```
 
-Group propositions by level (words, sentences, passages). Three longest
-examples per proposition, longest first. Bold the focus sentence in each.
+Group propositions by level. Three longest examples per proposition, longest
+first. Bold the focus sentence in each.
 
 ### references/propositions.json
 
