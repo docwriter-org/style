@@ -2,9 +2,9 @@
 name: docwriter-style-generator
 description: >-
   Build a writing style skill from your own prose. Analyzes your writing at the
-  word, sentence, and passage level and produces a portable my-writing-style skill
-  that Claude Code loads automatically. Run /docwriter-style-generator to start, or let
-  it trigger when you ask to learn or build a writing style.
+  word, sentence, and passage level and produces a portable my-writing-style
+  skill that Claude Code loads automatically. Run /docwriter-style-generator to
+  start, or let it trigger when you ask to learn or build a writing style.
 ---
 
 # Build a writing style skill
@@ -14,22 +14,61 @@ each one with you, and writes a separate `my-writing-style` skill to
 `~/.claude/skills/my-writing-style/` that Claude Code picks up automatically in
 every project.
 
-If `~/.claude/skills/my-writing-style/SKILL.md` already exists, tell the user they
-already have a style skill and ask if they want to rebuild it from new samples.
+If `~/.claude/skills/my-writing-style/SKILL.md` already exists, ask:
+
+```
+AskUserQuestion:
+  header: "Style skill"
+  question: "You already have a writing style skill. What would you like to do?"
+  options:
+    - label: "Rebuild from scratch"
+      description: "Start over with new writing samples"
+    - label: "Keep it"
+      description: "Nothing to do — your style skill is already active"
+```
+
+If they choose "Keep it", stop. Otherwise continue below.
 
 ## 1. Gather sources
 
-Accept whatever the user gives you: file paths (use Read), URLs (use
-WebFetch — extract the article body, skip nav/chrome), or pasted text. Three
-to five pieces, 1000+ words each, is the sweet spot. Fewer is fine — mention
-it and move on. Label each source by what the user calls it.
+Ask where their writing is:
 
-If a source is from a web page, strip everything that is not the author's
-prose: menus, bylines, share buttons, cookie banners, footers, URLs.
+```
+AskUserQuestion:
+  header: "Sources"
+  question: "Where is your writing? I need 3–5 pieces (1000+ words each)."
+  options:
+    - label: "Local files"
+      description: "I'll give you file paths or globs"
+    - label: "URLs"
+      description: "Blog posts, articles, docs — I'll give you links"
+    - label: "I'll paste it"
+      description: "I'll paste text directly"
+    - label: "Mix"
+      description: "Some files, some URLs, some pasted"
+```
+
+Based on their answer, ask for the paths/URLs/text. Read files with Read,
+fetch URLs with WebFetch (extract the article body, strip nav/menus/footers/
+cookie banners/bylines). Label each source by what the user calls it.
+
+After gathering, confirm:
+
+```
+AskUserQuestion:
+  header: "Sources"
+  question: "I have N pieces. Ready to analyze, or add more?"
+  options:
+    - label: "Analyze these"
+      description: "Start the style analysis"
+    - label: "Add more"
+      description: "I have more writing to add"
+```
 
 ## 2. Analyze
 
-Read all the sources. Find habits at three levels:
+Read all the sources. Find habits at three levels by running three parallel
+Agent forks:
 
 - **Words and phrases** — what words does this person reach for? Plain or
   complex, concrete or abstract, formal or casual. Contractions, hedges,
@@ -40,12 +79,12 @@ Read all the sources. Find habits at three levels:
   parallelism, reader address, first person, stance, how other voices
   (quotes, citations) are handled.
 
-Run these three as parallel Agent forks against the sources. Each fork
-returns its findings as propositions (see format below). Then merge: drop
-duplicates, drop vague advice any writer follows, drop anything that leans
-on boilerplate text rather than the author's prose. Reword anything that
+Then merge: drop duplicates, drop vague advice any writer follows, drop
+anything that leans on boilerplate rather than prose. Reword anything that
 sounds like a linguistics lecture into plain advice. Prefer fewer sharp
 habits over many soft ones.
+
+Tell the user how many habits you found before moving to calibration.
 
 ### What a proposition looks like
 
@@ -79,22 +118,37 @@ Rules that matter:
 
 ## 3. Calibrate
 
-For each proposition, show the writer its contrast pair and ask which
-version sounds more like their writing. Use AskUserQuestion with previews.
-Randomize which slot gets the original vs. the rewrite.
+For each proposition, show the writer its contrast pair. Use AskUserQuestion
+with previews. Randomize which slot (A or B) gets the original vs. the
+rewrite. Batch 3–4 propositions per question to keep it moving.
 
 ```
-question: "<statement> — which sounds more like you?"
-options:
-  A: [preview: candidate A]
-  B: [preview: candidate B]
-  Neither: skip this one
+AskUserQuestion:
+  header: "Voice check"
+  question: "Which sounds more like your writing?"
+  options:
+    - label: "A"
+      preview: <candidate A text>
+    - label: "B"
+      preview: <candidate B text>
+    - label: "Neither"
+      description: "Both miss the mark — skip this one"
 ```
 
 Writer picks original → keep. Writer picks rewrite or neither → drop.
-Batch 3-4 per question to keep it moving.
 
-Tell the user how many survived.
+After all calibrations, report how many survived and ask to confirm:
+
+```
+AskUserQuestion:
+  header: "Results"
+  question: "N out of M habits confirmed. Save as your writing style?"
+  options:
+    - label: "Save it"
+      description: "Write the skill to ~/.claude/skills/my-writing-style/"
+    - label: "Start over"
+      description: "Discard and try with different samples"
+```
 
 ## 4. Write the my-writing-style skill
 
@@ -149,3 +203,6 @@ All examples grouped by proposition statement, focus sentences bolded.
 ### references/source-manifest.json
 
 `[{ "label": "...", "wordCount": 123 }]` for each source used.
+
+After writing, tell the user their style skill is active and will load
+automatically in every Claude Code session.
