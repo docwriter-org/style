@@ -1,12 +1,11 @@
-# docwriter-style
+# docwriter-style-generator
 
-Your writing style as a Claude Code skill.
+Build a `my-writing-style` skill from your own prose.
 
-The first time it loads, it asks for writing samples — local files, URLs, or
-pasted text — and learns your habits at the word, sentence, and passage level.
-After that, it applies the learned style whenever you draft or revise prose.
-
-One skill, two modes: learn, then apply.
+Give it a few pieces of your writing — local files, URLs, or pasted text — and
+it analyzes your habits at the word, sentence, and passage level, checks each
+one with you, and writes a skill to `~/.claude/skills/my-writing-style/` that
+Claude Code loads automatically in every project.
 
 ## Install
 
@@ -16,9 +15,25 @@ claude plugin install docwriter-org/style
 
 ## Use
 
-The skill loads automatically. If no profile exists yet, it prompts you for
-samples. To rebuild from scratch, delete `~/.claude/skills/docwriter-style/references/`
-and it will ask again.
+```
+/docwriter-style-generator
+```
 
-Works standalone in any Claude Code session. If you also use DocWriter, it
-picks up the same profile automatically.
+Or just ask Claude to learn your writing style — the skill triggers
+automatically.
+
+## What it produces
+
+A separate skill at `~/.claude/skills/my-writing-style/`:
+
+```
+my-writing-style/
+  SKILL.md              ← "write like this person" instructions
+  references/
+    propositions.json   ← the habit data
+    examples.md         ← your passages with key sentences highlighted
+    source-manifest.json
+```
+
+Also produced by DocWriter's UI flow ("Save globally"), so both paths
+are compatible.

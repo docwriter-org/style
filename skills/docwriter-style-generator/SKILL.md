@@ -1,20 +1,20 @@
 ---
-name: docwriter-style
+name: docwriter-style-generator
 description: >-
   Build a writing style skill from your own prose. Analyzes your writing at the
-  word, sentence, and passage level and produces a portable author-style skill
-  that Claude Code loads automatically. Run /docwriter-style to start, or let
+  word, sentence, and passage level and produces a portable my-writing-style skill
+  that Claude Code loads automatically. Run /docwriter-style-generator to start, or let
   it trigger when you ask to learn or build a writing style.
 ---
 
 # Build a writing style skill
 
 This skill is a generator. It reads your writing, distills your habits, checks
-each one with you, and writes a separate `author-style` skill to
-`~/.claude/skills/author-style/` that Claude Code picks up automatically in
+each one with you, and writes a separate `my-writing-style` skill to
+`~/.claude/skills/my-writing-style/` that Claude Code picks up automatically in
 every project.
 
-If `~/.claude/skills/author-style/SKILL.md` already exists, tell the user they
+If `~/.claude/skills/my-writing-style/SKILL.md` already exists, tell the user they
 already have a style skill and ask if they want to rebuild it from new samples.
 
 ## 1. Gather sources
@@ -96,16 +96,16 @@ Batch 3-4 per question to keep it moving.
 
 Tell the user how many survived.
 
-## 4. Write the author-style skill
+## 4. Write the my-writing-style skill
 
-Write a complete skill to `~/.claude/skills/author-style/`. Create the
+Write a complete skill to `~/.claude/skills/my-writing-style/`. Create the
 directory if it does not exist.
 
 ### SKILL.md
 
 ```markdown
 ---
-name: author-style
+name: my-writing-style
 description: >-
   Apply the learned writing style when drafting or revising prose. Follow these
   habits where they fit; ignore any that would make the sentence worse.
