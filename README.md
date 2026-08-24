@@ -34,6 +34,3 @@ my-writing-style/
     examples.md         ← your passages with key sentences highlighted
     source-manifest.json
 ```
-
-Also produced by DocWriter's UI flow ("Save globally"), so both paths
-are compatible.
