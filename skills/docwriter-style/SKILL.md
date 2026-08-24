@@ -1,15 +1,28 @@
 ---
 name: docwriter-style
 description: >-
-  Learn a writer's style from their prose and produce a portable style skill
-  that any Claude Code project can use. Accepts local files, URLs, or pasted
-  text as sources.
+  The user's writing style. Applies learned habits when drafting or revising
+  prose. If no style profile exists yet, prompts the user for writing samples
+  and builds one.
 ---
 
-# Learn a writing style
+# Writing style
 
-Read the user's writing. Distill it into concrete habits. Check each habit
-with the writer. Write a skill file they can drop into any project.
+First, check whether a profile exists: try to Read
+`~/.claude/skills/docwriter-style/references/propositions.json`.
+
+If it exists and contains propositions, read
+`~/.claude/skills/docwriter-style/references/style-profile.md` and follow
+those instructions when drafting or revising prose. The user's own rules and
+requests always win. Done — stop here.
+
+If the file is missing or empty, the user has no style profile yet. Tell them
+and ask for writing samples so you can build one. Follow the learning pipeline
+below.
+
+---
+
+# Learning pipeline
 
 ## 1. Gather sources
 
@@ -90,17 +103,18 @@ Batch 3-4 per question to keep it moving.
 
 Tell the user how many survived.
 
-## 4. Write the skill
+## 4. Write the profile
 
-Default location: `.claude/skills/author-style/` in the user's project. Ask
-if they want it somewhere else.
+Write the results into this skill's own directory at
+`~/.claude/skills/docwriter-style/references/`. Create the directory if it
+does not exist.
 
-### SKILL.md
+### references/style-profile.md
 
-YAML frontmatter with `name` and `description`, then:
+The style instructions that future invocations will follow. Format:
 
 ```markdown
-# Apply the learned author style
+# Learned style profile
 
 These are tendencies learned from a few pieces of writing, not rules. Follow
 them where they fit; ignore any that would make the sentence worse. A draft
@@ -108,8 +122,6 @@ that mechanically hits every instruction reads like an imitation.
 
 Do not copy subject matter, facts, or turns of phrase from the examples —
 only how the sentences are built.
-
-The user's own rules and requests always win over these instructions.
 
 ## <family heading>
 
@@ -120,14 +132,19 @@ The user's own rules and requests always win over these instructions.
   > <another example>
 
   > <another example>
-
-(repeat for each proposition, grouped by level: words, sentences, passages)
 ```
 
-Three longest examples per proposition, longest first.
+Group propositions by level (words, sentences, passages). Three longest
+examples per proposition, longest first. Bold the focus sentence in each.
 
-### references/
+### references/propositions.json
 
-- `examples.md` — all examples grouped by proposition, focus sentences bolded
-- `propositions.json` — the full proposition objects as a JSON array
-- `source-manifest.json` — `[{ label, wordCount }]` for each source
+The full proposition objects as a JSON array.
+
+### references/examples.md
+
+All examples grouped by proposition statement, focus sentences bolded.
+
+### references/source-manifest.json
+
+`[{ "label": "...", "wordCount": 123 }]` for each source used.

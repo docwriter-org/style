@@ -1,12 +1,12 @@
 # docwriter-style
 
-A Claude Code plugin that learns your writing style from samples and produces
-a portable style skill you can drop into any project.
+Your writing style as a Claude Code skill.
 
-Give it a few pieces of your writing — local files, URLs, or pasted text — and
-it reads them, finds your habits at the word, sentence, and passage level,
-checks each one with you, and writes a skill file that teaches Claude to write
-like you.
+The first time it loads, it asks for writing samples — local files, URLs, or
+pasted text — and learns your habits at the word, sentence, and passage level.
+After that, it applies the learned style whenever you draft or revise prose.
+
+One skill, two modes: learn, then apply.
 
 ## Install
 
@@ -14,29 +14,11 @@ like you.
 claude plugin install docwriter-org/style
 ```
 
-Or for local development:
-
-```bash
-claude --plugin-dir /path/to/docwriter-style
-```
-
 ## Use
 
-```
-/docwriter-style
-```
+The skill loads automatically. If no profile exists yet, it prompts you for
+samples. To rebuild from scratch, delete `~/.claude/skills/docwriter-style/references/`
+and it will ask again.
 
-Then point it at your writing: file paths, URLs, or paste text directly.
-
-## What it produces
-
-A skill folder you can drop into any project's `.claude/skills/`:
-
-```
-author-style/
-  SKILL.md              ← the style instructions Claude follows
-  references/
-    examples.md         ← your passages with key sentences highlighted
-    propositions.json   ← the full habit data
-    source-manifest.json
-```
+Works standalone in any Claude Code session. If you also use DocWriter, it
+picks up the same profile automatically.
