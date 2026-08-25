@@ -1,16 +1,15 @@
 {
   "name": "docwriter-style",
-  "owner": {
-    "name": "DocWriter"
-  },
   "interface": {
     "displayName": "DocWriter style"
   },
   "plugins": [
     {
       "name": "docwriter-style-generator",
-      "source": "./",
-      "description": "Learn a writing style from samples and produce a portable my-writing-style skill",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_USE"

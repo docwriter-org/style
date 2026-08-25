@@ -69,6 +69,8 @@ for (const needle of [
 	'Words and phrases',
 	'multi-agent pass',
 	'~/.claude/skills/my-writing-style/sources/',
+	'~/.agents/skills/my-writing-style/',
+	'$docwriter-style-generator',
 	'Add a source',
 	'Update propositions'
 ]) {
@@ -76,6 +78,36 @@ for (const needle of [
 }
 if (skill.includes('/tmp/source-')) {
 	throw new Error('cleaned sources should live in the style skill, not /tmp');
+}
+
+const marketplace = JSON.parse(readFileSync(join(root, '.claude-plugin/marketplace.json'), 'utf8'));
+if (marketplace.name !== 'docwriter-style') throw new Error('marketplace name should be docwriter-style');
+if (!marketplace.plugins.some((plugin) => plugin.name === 'docwriter-style-generator')) {
+	throw new Error('marketplace must list docwriter-style-generator');
+}
+const codexPlugin = JSON.parse(readFileSync(join(root, '.codex-plugin/plugin.json'), 'utf8'));
+if (codexPlugin.name !== 'docwriter-style-generator' || codexPlugin.skills !== './skills/') {
+	throw new Error('Codex plugin manifest must name the generator and point at ./skills/');
+}
+const agentsMarketplace = JSON.parse(readFileSync(join(root, '.agents/plugins/marketplace.json'), 'utf8'));
+if (agentsMarketplace.name !== 'docwriter-style') throw new Error('Codex marketplace name should be docwriter-style');
+const [codexListing] = agentsMarketplace.plugins;
+if (codexListing?.source?.path !== './' || !codexListing.policy?.installation || !codexListing.category) {
+	throw new Error('Codex marketplace must list ./ with policy and category');
+}
+
+const readme = readFileSync(join(root, 'README.md'), 'utf8');
+for (const needle of [
+	'https://docs.docwriter.org/customize/style',
+	'/plugin marketplace update docwriter-style',
+	'claude plugin marketplace update docwriter-style',
+	'codex plugin marketplace upgrade docwriter-style',
+	'$docwriter-style-generator',
+	'Use a session **or** the',
+	'Either, in a Claude Code session:',
+	'Or, in the terminal:'
+]) {
+	if (!readme.includes(needle)) throw new Error(`README.md is missing ${needle}`);
 }
 
 process.stdout.write(`ok: ${lexical.measurements.length} measured lexical metrics, ${full.measurements.length} measured metrics across four families\n`);

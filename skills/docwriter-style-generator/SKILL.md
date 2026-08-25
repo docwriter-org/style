@@ -3,21 +3,27 @@ name: docwriter-style-generator
 description: >-
   Build a writing style skill from your own prose. Measures word-level habits,
   then runs a multi-agent pass over words, sentences, and passages, and
-  produces a portable my-writing-style skill that Claude Code loads
+  produces a portable my-writing-style skill that Claude Code and Codex load
   automatically. Run again to add a source or update the habits. Run
-  /docwriter-style-generator to start, or let it trigger when you ask to learn
-  or update a writing style.
+  /docwriter-style-generator or $docwriter-style-generator to start, or let
+  it trigger when you ask to learn or update a writing style.
 ---
 
 # Build a writing style skill
 
 This skill is a generator. It reads your writing, measures word-level habits
 with the bundled analyzer, runs a multi-agent pass, checks each habit with
-you, and writes a separate `my-writing-style` skill to
-`~/.claude/skills/my-writing-style/` that Claude Code picks up automatically in
-every project.
+you, and writes a separate `my-writing-style` skill that Claude Code and
+Codex pick up automatically.
 
-If `~/.claude/skills/my-writing-style/SKILL.md` already exists, ask:
+Write the same files to both homes:
+
+```
+~/.claude/skills/my-writing-style/   ← Claude Code
+~/.agents/skills/my-writing-style/   ← Codex
+```
+
+If either home already has `SKILL.md`, ask:
 
 ```
 AskUserQuestion:
@@ -77,6 +83,7 @@ directories if they do not exist:
 
 ```
 ~/.claude/skills/my-writing-style/sources/<label>.txt
+~/.agents/skills/my-writing-style/sources/<label>.txt
 ```
 
 Use the user's label as the filename (safe slug). On a rebuild, replace
@@ -103,8 +110,8 @@ Do not jump straight to impressions of word choice. Measure first, then read.
 ### 2a. Word-level measurements
 
 This skill ships `scripts/analyze-style.mjs` next to this file. Run it on
-every file in `~/.claude/skills/my-writing-style/sources/` in one invocation,
-and write the report next to them:
+every file in the style skill `sources/` folder in one invocation, and write
+the report to `references/metrics.json` in both homes:
 
 ```bash
 node scripts/analyze-style.mjs \
@@ -114,6 +121,9 @@ node scripts/analyze-style.mjs \
   --words \
   --measured
 ```
+
+Copy that `metrics.json` to `~/.agents/skills/my-writing-style/references/` as
+well.
 
 `--words` keeps word-level scores. `--measured` drops zeros. A zero is not
 evidence of a habit — do not invent absences from missing metrics.
@@ -205,15 +215,15 @@ AskUserQuestion:
   question: "N out of M habits confirmed. Save as your writing style?"
   options:
     - label: "Save it"
-      description: "Write the skill to ~/.claude/skills/my-writing-style/"
+      description: "Write the skill for Claude Code and Codex"
     - label: "Start over"
       description: "Discard and try with different samples"
 ```
 
 ## 4. Write the my-writing-style skill
 
-Write a complete skill to `~/.claude/skills/my-writing-style/`. Create the
-directory if it does not exist.
+Write a complete skill to both homes. Create the directories if they do not
+exist. The two copies must match.
 
 ### SKILL.md
 
@@ -281,5 +291,5 @@ scripts/style-data.json
 ```
 
 After writing, tell the user their style skill is active and will load
-automatically in every Claude Code session. They can run this generator
+automatically in Claude Code and Codex. They can run this generator
 again to add a source or update the habits.
