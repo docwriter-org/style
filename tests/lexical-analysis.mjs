@@ -78,4 +78,10 @@ if (skill.includes('/tmp/source-')) {
 	throw new Error('cleaned sources should live in the style skill, not /tmp');
 }
 
+const marketplace = JSON.parse(readFileSync(join(root, '.claude-plugin/marketplace.json'), 'utf8'));
+if (marketplace.name !== 'docwriter-style') throw new Error('marketplace name should be docwriter-style');
+if (!marketplace.plugins.some((plugin) => plugin.name === 'docwriter-style-generator' && plugin.source === './')) {
+	throw new Error('marketplace must list docwriter-style-generator at ./');
+}
+
 process.stdout.write(`ok: ${lexical.measurements.length} measured lexical metrics, ${full.measurements.length} measured metrics across four families\n`);

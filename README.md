@@ -10,8 +10,19 @@ every project.
 
 ## Install
 
+Claude Code installs plugins from a marketplace, not from a GitHub path
+alone. Add this repo, then install the plugin:
+
+```
+/plugin marketplace add docwriter-org/style
+/plugin install docwriter-style-generator@docwriter-style
+```
+
+Or from the terminal:
+
 ```bash
-claude plugin install docwriter-org/style
+claude plugin marketplace add docwriter-org/style
+claude plugin install docwriter-style-generator@docwriter-style
 ```
 
 ## Use
