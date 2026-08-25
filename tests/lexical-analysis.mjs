@@ -72,12 +72,17 @@ for (const needle of [
 	'~/.agents/skills/my-writing-style/',
 	'$docwriter-style-generator',
 	'Add a source',
-	'Update propositions'
+	'Update propositions',
+	'scripts/save-source.mjs',
+	'verbatim'
 ]) {
 	if (!skill.includes(needle)) throw new Error(`SKILL.md is missing ${needle}`);
 }
 if (skill.includes('/tmp/source-')) {
-	throw new Error('cleaned sources should live in the style skill, not /tmp');
+	throw new Error('sources should live in the style skill, not /tmp');
+}
+if (skill.includes('fetch URLs with WebFetch')) {
+	throw new Error('WebFetch paraphrases; sources must go through save-source.mjs');
 }
 
 const marketplace = JSON.parse(readFileSync(join(root, '.claude-plugin/marketplace.json'), 'utf8'));

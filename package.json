@@ -3,6 +3,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tests/lexical-analysis.mjs"
+    "test": "node tests/lexical-analysis.mjs && node tests/save-source.mjs"
   }
 }
