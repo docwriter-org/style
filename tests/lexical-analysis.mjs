@@ -67,9 +67,13 @@ for (const needle of [
 	'scripts/analyze-style.mjs',
 	'--words',
 	'Words and phrases',
-	'multi-agent pass'
+	'multi-agent pass',
+	'~/.claude/skills/my-writing-style/sources/'
 ]) {
 	if (!skill.includes(needle)) throw new Error(`SKILL.md is missing ${needle}`);
+}
+if (skill.includes('/tmp/source-')) {
+	throw new Error('cleaned sources should live in the style skill, not /tmp');
 }
 
 process.stdout.write(`ok: ${lexical.measurements.length} measured lexical metrics, ${full.measurements.length} measured metrics across four families\n`);

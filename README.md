@@ -30,6 +30,7 @@ A separate skill at `~/.claude/skills/my-writing-style/`:
 ```
 my-writing-style/
   SKILL.md              ← "write like this person" instructions
+  sources/              ← cleaned writing samples
   references/
     propositions.json   ← the habit data
     examples.md         ← your passages with key sentences highlighted

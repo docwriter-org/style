@@ -54,6 +54,16 @@ Based on their answer, ask for the paths/URLs/text. Read files with Read,
 fetch URLs with WebFetch (extract the article body, strip nav/menus/footers/
 cookie banners/bylines). Label each source by what the user calls it.
 
+Write each cleaned source into the style skill, not `/tmp`. Create the
+directories if they do not exist:
+
+```
+~/.claude/skills/my-writing-style/sources/<label>.txt
+```
+
+Use the user's label as the filename (safe slug). On a rebuild, replace
+`sources/` so leftover pieces from the last run do not stay in the sample.
+
 After gathering, confirm:
 
 ```
@@ -74,13 +84,14 @@ Do not jump straight to impressions of word choice. Measure first, then read.
 ### 2a. Word-level measurements
 
 This skill ships `scripts/analyze-style.mjs` next to this file. Run it on
-every cleaned source in one invocation:
+every file in `~/.claude/skills/my-writing-style/sources/` in one invocation,
+and write the report next to them:
 
 ```bash
 node scripts/analyze-style.mjs \
-  --input /tmp/source-1.txt \
-  --input /tmp/source-2.txt \
-  --output /tmp/style-report.json \
+  --input ~/.claude/skills/my-writing-style/sources/essay.txt \
+  --input ~/.claude/skills/my-writing-style/sources/talk.txt \
+  --output ~/.claude/skills/my-writing-style/references/metrics.json \
   --words \
   --measured
 ```
