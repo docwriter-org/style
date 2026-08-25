@@ -1,0 +1,8 @@
+{
+  "name": "docwriter-style",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/lexical-analysis.mjs"
+  }
+}
