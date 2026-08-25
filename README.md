@@ -10,12 +10,16 @@ every project.
 
 ## Install
 
-Add the marketplace, then install the plugin:
+Add the marketplace, then install the plugin.
+
+From a Claude Code session:
 
 ```
 /plugin marketplace add docwriter-org/style
 /plugin install docwriter-style-generator@docwriter-style
 ```
+
+From the terminal:
 
 ```bash
 claude plugin marketplace add docwriter-org/style
