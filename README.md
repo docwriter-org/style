@@ -10,9 +10,18 @@ every project.
 
 ## Install
 
-```bash
-claude plugin install docwriter-org/style
+Add the marketplace, then install the plugin:
+
 ```
+/plugin marketplace add docwriter-org/style
+/plugin install docwriter-style-generator@docwriter-style
+```
+
+```bash
+claude plugin marketplace add docwriter-org/style
+claude plugin install docwriter-style-generator@docwriter-style
+```
+
 
 ## Use
 

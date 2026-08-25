@@ -1,3 +1,5 @@
 {
-  "name": "docwriter-style-generator"
+  "name": "docwriter-style-generator",
+  "description": "Learn a writing style from samples and produce a portable my-writing-style skill",
+  "version": "1.0.0"
 }
