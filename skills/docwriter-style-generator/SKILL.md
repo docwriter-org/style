@@ -3,10 +3,10 @@ name: docwriter-style-generator
 description: >-
   Build a writing style skill from your own prose. Measures word-level habits,
   then runs a multi-agent pass over words, sentences, and passages, and
-  produces a portable my-writing-style skill that Claude Code loads
+  produces a portable my-writing-style skill that Claude Code and Codex load
   automatically. Run again to add a source or update the habits. Run
-  /docwriter-style-generator to start, or let it trigger when you ask to learn
-  or update a writing style.
+  /docwriter-style-generator or $docwriter-style-generator to start, or let
+  it trigger when you ask to learn or update a writing style.
 ---
 
 # Build a writing style skill
@@ -291,5 +291,5 @@ scripts/style-data.json
 ```
 
 After writing, tell the user their style skill is active and will load
-automatically in every Claude Code session. They can run this generator
+automatically in Claude Code and Codex. They can run this generator
 again to add a source or update the habits.

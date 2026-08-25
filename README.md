@@ -7,6 +7,9 @@ it measures word-level habits, runs a multi-agent pass over words, sentences,
 and passages, checks each habit with you, and writes a skill that Claude Code
 and Codex load automatically.
 
+This is the same style-learning flow used in the
+[DocWriter](https://docs.docwriter.org/customize/style) app.
+
 ## Install
 
 Add the marketplace, then install the plugin.
@@ -44,15 +47,51 @@ codex plugin marketplace add docwriter-org/style
 codex plugin add docwriter-style-generator@docwriter-style
 ```
 
+## Update
+
+Refresh the marketplace after we ship a change.
+
+### Claude Code
+
+From a Claude Code session:
+
+```
+/plugin marketplace update docwriter-style
+```
+
+From the terminal:
+
+```bash
+claude plugin marketplace update docwriter-style
+```
+
+### Codex
+
+From a Codex session, open `/plugins` and refresh marketplace `docwriter-style`.
+
+From the terminal:
+
+```bash
+codex plugin marketplace upgrade docwriter-style
+```
+
 
 ## Use
+
+Claude Code:
 
 ```
 /docwriter-style-generator
 ```
 
-Or just ask Claude to learn your writing style — the skill triggers
-automatically. Run it again to add a source or update the habits.
+Codex:
+
+```
+$docwriter-style-generator
+```
+
+Or just ask to learn your writing style — the skill triggers automatically.
+Run it again to add a source or update the habits.
 
 ## What it produces
 

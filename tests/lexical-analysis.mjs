@@ -70,6 +70,7 @@ for (const needle of [
 	'multi-agent pass',
 	'~/.claude/skills/my-writing-style/sources/',
 	'~/.agents/skills/my-writing-style/',
+	'$docwriter-style-generator',
 	'Add a source',
 	'Update propositions'
 ]) {
@@ -90,5 +91,20 @@ if (codexPlugin.name !== 'docwriter-style-generator' || codexPlugin.skills !== '
 }
 const agentsMarketplace = JSON.parse(readFileSync(join(root, '.agents/plugins/marketplace.json'), 'utf8'));
 if (agentsMarketplace.name !== 'docwriter-style') throw new Error('Codex marketplace name should be docwriter-style');
+const [codexListing] = agentsMarketplace.plugins;
+if (codexListing?.source?.path !== './' || !codexListing.policy?.installation || !codexListing.category) {
+	throw new Error('Codex marketplace must list ./ with policy and category');
+}
+
+const readme = readFileSync(join(root, 'README.md'), 'utf8');
+for (const needle of [
+	'https://docs.docwriter.org/customize/style',
+	'/plugin marketplace update docwriter-style',
+	'claude plugin marketplace update docwriter-style',
+	'codex plugin marketplace upgrade docwriter-style',
+	'$docwriter-style-generator'
+]) {
+	if (!readme.includes(needle)) throw new Error(`README.md is missing ${needle}`);
+}
 
 process.stdout.write(`ok: ${lexical.measurements.length} measured lexical metrics, ${full.measurements.length} measured metrics across four families\n`);
