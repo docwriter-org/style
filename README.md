@@ -12,18 +12,19 @@ This is the same style-learning flow used in the
 
 ## Install
 
-Add the marketplace, then install the plugin.
+Add the marketplace, then install the plugin. Use a session **or** the
+terminal — not both.
 
 ### Claude Code
 
-From a Claude Code session:
+Either, in a Claude Code session:
 
 ```
 /plugin marketplace add docwriter-org/style
 /plugin install docwriter-style-generator@docwriter-style
 ```
 
-From the terminal:
+Or, in the terminal:
 
 ```bash
 claude plugin marketplace add docwriter-org/style
@@ -32,15 +33,10 @@ claude plugin install docwriter-style-generator@docwriter-style
 
 ### Codex
 
-From a Codex session:
+Either, in a Codex session, run `/plugins`, add marketplace
+`docwriter-org/style`, then install `docwriter-style-generator`.
 
-```
-/plugins
-```
-
-Add marketplace `docwriter-org/style`, then install `docwriter-style-generator`.
-
-From the terminal:
+Or, in the terminal:
 
 ```bash
 codex plugin marketplace add docwriter-org/style
@@ -49,17 +45,18 @@ codex plugin add docwriter-style-generator@docwriter-style
 
 ## Update
 
-Refresh the marketplace after we ship a change.
+Refresh the marketplace after we ship a change. Same choice: session **or**
+terminal.
 
 ### Claude Code
 
-From a Claude Code session:
+Either, in a Claude Code session:
 
 ```
 /plugin marketplace update docwriter-style
 ```
 
-From the terminal:
+Or, in the terminal:
 
 ```bash
 claude plugin marketplace update docwriter-style
@@ -67,9 +64,10 @@ claude plugin marketplace update docwriter-style
 
 ### Codex
 
-From a Codex session, open `/plugins` and refresh marketplace `docwriter-style`.
+Either, in a Codex session, open `/plugins` and refresh marketplace
+`docwriter-style`.
 
-From the terminal:
+Or, in the terminal:
 
 ```bash
 codex plugin marketplace upgrade docwriter-style
@@ -78,20 +76,9 @@ codex plugin marketplace upgrade docwriter-style
 
 ## Use
 
-Claude Code:
-
-```
-/docwriter-style-generator
-```
-
-Codex:
-
-```
-$docwriter-style-generator
-```
-
-Or just ask to learn your writing style — the skill triggers automatically.
-Run it again to add a source or update the habits.
+In Claude Code run `/docwriter-style-generator`. In Codex run
+`$docwriter-style-generator`. Or just ask to learn your writing style — the
+skill triggers automatically. Run it again to add a source or update the habits.
 
 ## What it produces
 

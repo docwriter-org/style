@@ -102,7 +102,10 @@ for (const needle of [
 	'/plugin marketplace update docwriter-style',
 	'claude plugin marketplace update docwriter-style',
 	'codex plugin marketplace upgrade docwriter-style',
-	'$docwriter-style-generator'
+	'$docwriter-style-generator',
+	'Use a session **or** the',
+	'Either, in a Claude Code session:',
+	'Or, in the terminal:'
 ]) {
 	if (!readme.includes(needle)) throw new Error(`README.md is missing ${needle}`);
 }
