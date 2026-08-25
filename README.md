@@ -3,8 +3,8 @@
 Build a `my-writing-style` skill from your own prose.
 
 Give it a few pieces of your writing — local files, URLs, or pasted text — and
-it measures word-level habits, reads the same prose at the sentence and
-passage level, checks each habit with you, and writes a skill to
+it measures word-level habits, runs a multi-agent pass over words, sentences,
+and passages, checks each habit with you, and writes a skill to
 `~/.claude/skills/my-writing-style/` that Claude Code loads automatically in
 every project.
 
@@ -25,9 +25,8 @@ automatically.
 
 ## How analysis works
 
-This is one skill, not a set of specialist agents. After it has your sources,
-it runs a local script to score word-level habits, then reads the prose
-itself at three levels: words, sentences, and passages.
+After it has your sources, it scores word-level habits with a local script,
+then runs a multi-agent pass: words, sentences, and passages.
 
 ```bash
 node skills/docwriter-style-generator/scripts/analyze-style.mjs \

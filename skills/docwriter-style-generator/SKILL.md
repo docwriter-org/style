@@ -2,22 +2,19 @@
 name: docwriter-style-generator
 description: >-
   Build a writing style skill from your own prose. Measures word-level habits,
-  then reads the writing at the sentence and passage level, and produces a
-  portable my-writing-style skill that Claude Code loads automatically. Run
-  /docwriter-style-generator to start, or let it trigger when you ask to learn
-  or build a writing style.
+  then runs a multi-agent pass over words, sentences, and passages, and
+  produces a portable my-writing-style skill that Claude Code loads
+  automatically. Run /docwriter-style-generator to start, or let it trigger
+  when you ask to learn or build a writing style.
 ---
 
 # Build a writing style skill
 
 This skill is a generator. It reads your writing, measures word-level habits
-with the bundled analyzer, distills those habits, checks each one with you,
-and writes a separate `my-writing-style` skill to
+with the bundled analyzer, runs a multi-agent pass, checks each habit with
+you, and writes a separate `my-writing-style` skill to
 `~/.claude/skills/my-writing-style/` that Claude Code picks up automatically in
 every project.
-
-Do this in one conversation. Do not spawn specialist agents, named reviewers,
-or extra subagents for lexis, grammar, or discourse.
 
 If `~/.claude/skills/my-writing-style/SKILL.md` already exists, ask:
 
@@ -95,13 +92,13 @@ The report is a hint for where to look: plain vs complex words, formal vs
 casual, concrete vs abstract, contractions, hedges, signature phrases. Never
 copy a rate or score into a proposition.
 
-Tell the user you finished the word-level measurements, then keep going in
-this same conversation.
+Tell the user you finished the word-level measurements, then start the
+multi-agent pass.
 
-### 2b. Read the prose
+### 2b. Multi-agent pass
 
-Read all the sources. Find habits at three levels. You can think about them
-in parallel, but you do the reading — no specialist agents:
+Read all the sources. Find habits at three levels by running three parallel
+Agent forks:
 
 - **Words and phrases** — what words does this person reach for? Plain or
   complex, concrete or abstract, formal or casual. Contractions, hedges,

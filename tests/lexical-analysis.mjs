@@ -67,12 +67,9 @@ for (const needle of [
 	'scripts/analyze-style.mjs',
 	'--words',
 	'Words and phrases',
-	'no specialist agents'
+	'multi-agent pass'
 ]) {
 	if (!skill.includes(needle)) throw new Error(`SKILL.md is missing ${needle}`);
-}
-if (skill.includes('### 2b. Specialists') || skill.includes('lexis specialist') || skill.includes('Leech and Short')) {
-	throw new Error('SKILL.md still describes specialist agents');
 }
 
 process.stdout.write(`ok: ${lexical.measurements.length} measured lexical metrics, ${full.measurements.length} measured metrics across four families\n`);
