@@ -68,7 +68,9 @@ for (const needle of [
 	'--words',
 	'Words and phrases',
 	'multi-agent pass',
-	'~/.claude/skills/my-writing-style/sources/'
+	'~/.claude/skills/my-writing-style/sources/',
+	'Add a source',
+	'Update propositions'
 ]) {
 	if (!skill.includes(needle)) throw new Error(`SKILL.md is missing ${needle}`);
 }

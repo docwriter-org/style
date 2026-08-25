@@ -21,7 +21,7 @@ claude plugin install docwriter-org/style
 ```
 
 Or just ask Claude to learn your writing style — the skill triggers
-automatically.
+automatically. Run it again to add a source or update the habits.
 
 ## What it produces
 

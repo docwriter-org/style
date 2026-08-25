@@ -4,8 +4,9 @@ description: >-
   Build a writing style skill from your own prose. Measures word-level habits,
   then runs a multi-agent pass over words, sentences, and passages, and
   produces a portable my-writing-style skill that Claude Code loads
-  automatically. Run /docwriter-style-generator to start, or let it trigger
-  when you ask to learn or build a writing style.
+  automatically. Run again to add a source or update the habits. Run
+  /docwriter-style-generator to start, or let it trigger when you ask to learn
+  or update a writing style.
 ---
 
 # Build a writing style skill
@@ -23,13 +24,30 @@ AskUserQuestion:
   header: "Style skill"
   question: "You already have a writing style skill. What would you like to do?"
   options:
+    - label: "Add a source"
+      description: "Keep the current habits and samples; add another piece of writing"
+    - label: "Update propositions"
+      description: "Re-read the existing sources and refresh the habits"
     - label: "Rebuild from scratch"
       description: "Start over with new writing samples"
     - label: "Keep it"
       description: "Nothing to do — your style skill is already active"
 ```
 
-If they choose "Keep it", stop. Otherwise continue below.
+If they choose "Keep it", stop.
+
+If they choose **Add a source**, skip to §1 but only collect the new piece.
+Write it into `sources/` next to the ones already there. Then do §2–4. Keep
+every already-confirmed proposition. Only calibrate habits that are new or
+that the new source changed.
+
+If they choose **Update propositions**, skip §1. Re-read `sources/` and
+`references/propositions.json`, then do §2–4. Keep a confirmed proposition
+when it still has three verbatim examples. Calibrate only new or changed
+habits.
+
+If they choose **Rebuild from scratch**, continue from §1 and replace
+`sources/`.
 
 ## 1. Gather sources
 
@@ -63,6 +81,7 @@ directories if they do not exist:
 
 Use the user's label as the filename (safe slug). On a rebuild, replace
 `sources/` so leftover pieces from the last run do not stay in the sample.
+When adding a source, leave the existing files alone.
 
 After gathering, confirm:
 
@@ -262,4 +281,5 @@ scripts/style-data.json
 ```
 
 After writing, tell the user their style skill is active and will load
-automatically in every Claude Code session.
+automatically in every Claude Code session. They can run this generator
+again to add a source or update the habits.
