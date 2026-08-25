@@ -3,9 +3,10 @@
 Build a `my-writing-style` skill from your own prose.
 
 Give it a few pieces of your writing — local files, URLs, or pasted text — and
-it analyzes your habits at the word, sentence, and passage level, checks each
-one with you, and writes a skill to `~/.claude/skills/my-writing-style/` that
-Claude Code loads automatically in every project.
+it measures word-level habits, runs a multi-agent pass over words, sentences,
+and passages, checks each habit with you, and writes a skill to
+`~/.claude/skills/my-writing-style/` that Claude Code loads automatically in
+every project.
 
 ## Install
 
@@ -20,7 +21,7 @@ claude plugin install docwriter-org/style
 ```
 
 Or just ask Claude to learn your writing style — the skill triggers
-automatically.
+automatically. Run it again to add a source or update the habits.
 
 ## What it produces
 
@@ -29,8 +30,11 @@ A separate skill at `~/.claude/skills/my-writing-style/`:
 ```
 my-writing-style/
   SKILL.md              ← "write like this person" instructions
+  sources/              ← cleaned writing samples
   references/
     propositions.json   ← the habit data
     examples.md         ← your passages with key sentences highlighted
     source-manifest.json
+    metrics.json        ← word-level measurements
+  scripts/              ← analyzer the skill runs
 ```

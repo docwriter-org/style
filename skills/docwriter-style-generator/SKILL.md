@@ -1,16 +1,19 @@
 ---
 name: docwriter-style-generator
 description: >-
-  Build a writing style skill from your own prose. Analyzes your writing at the
-  word, sentence, and passage level and produces a portable my-writing-style
-  skill that Claude Code loads automatically. Run /docwriter-style-generator to
-  start, or let it trigger when you ask to learn or build a writing style.
+  Build a writing style skill from your own prose. Measures word-level habits,
+  then runs a multi-agent pass over words, sentences, and passages, and
+  produces a portable my-writing-style skill that Claude Code loads
+  automatically. Run again to add a source or update the habits. Run
+  /docwriter-style-generator to start, or let it trigger when you ask to learn
+  or update a writing style.
 ---
 
 # Build a writing style skill
 
-This skill is a generator. It reads your writing, distills your habits, checks
-each one with you, and writes a separate `my-writing-style` skill to
+This skill is a generator. It reads your writing, measures word-level habits
+with the bundled analyzer, runs a multi-agent pass, checks each habit with
+you, and writes a separate `my-writing-style` skill to
 `~/.claude/skills/my-writing-style/` that Claude Code picks up automatically in
 every project.
 
@@ -21,13 +24,30 @@ AskUserQuestion:
   header: "Style skill"
   question: "You already have a writing style skill. What would you like to do?"
   options:
+    - label: "Add a source"
+      description: "Keep the current habits and samples; add another piece of writing"
+    - label: "Update propositions"
+      description: "Re-read the existing sources and refresh the habits"
     - label: "Rebuild from scratch"
       description: "Start over with new writing samples"
     - label: "Keep it"
       description: "Nothing to do — your style skill is already active"
 ```
 
-If they choose "Keep it", stop. Otherwise continue below.
+If they choose "Keep it", stop.
+
+If they choose **Add a source**, skip to §1 but only collect the new piece.
+Write it into `sources/` next to the ones already there. Then do §2–4. Keep
+every already-confirmed proposition. Only calibrate habits that are new or
+that the new source changed.
+
+If they choose **Update propositions**, skip §1. Re-read `sources/` and
+`references/propositions.json`, then do §2–4. Keep a confirmed proposition
+when it still has three verbatim examples. Calibrate only new or changed
+habits.
+
+If they choose **Rebuild from scratch**, continue from §1 and replace
+`sources/`.
 
 ## 1. Gather sources
 
@@ -52,6 +72,17 @@ Based on their answer, ask for the paths/URLs/text. Read files with Read,
 fetch URLs with WebFetch (extract the article body, strip nav/menus/footers/
 cookie banners/bylines). Label each source by what the user calls it.
 
+Write each cleaned source into the style skill, not `/tmp`. Create the
+directories if they do not exist:
+
+```
+~/.claude/skills/my-writing-style/sources/<label>.txt
+```
+
+Use the user's label as the filename (safe slug). On a rebuild, replace
+`sources/` so leftover pieces from the last run do not stay in the sample.
+When adding a source, leave the existing files alone.
+
 After gathering, confirm:
 
 ```
@@ -67,12 +98,41 @@ AskUserQuestion:
 
 ## 2. Analyze
 
+Do not jump straight to impressions of word choice. Measure first, then read.
+
+### 2a. Word-level measurements
+
+This skill ships `scripts/analyze-style.mjs` next to this file. Run it on
+every file in `~/.claude/skills/my-writing-style/sources/` in one invocation,
+and write the report next to them:
+
+```bash
+node scripts/analyze-style.mjs \
+  --input ~/.claude/skills/my-writing-style/sources/essay.txt \
+  --input ~/.claude/skills/my-writing-style/sources/talk.txt \
+  --output ~/.claude/skills/my-writing-style/references/metrics.json \
+  --words \
+  --measured
+```
+
+`--words` keeps word-level scores. `--measured` drops zeros. A zero is not
+evidence of a habit — do not invent absences from missing metrics.
+
+The report is a hint for where to look: plain vs complex words, formal vs
+casual, concrete vs abstract, contractions, hedges, signature phrases. Never
+copy a rate or score into a proposition.
+
+Tell the user you finished the word-level measurements, then start the
+multi-agent pass.
+
+### 2b. Multi-agent pass
+
 Read all the sources. Find habits at three levels by running three parallel
 Agent forks:
 
 - **Words and phrases** — what words does this person reach for? Plain or
   complex, concrete or abstract, formal or casual. Contractions, hedges,
-  signature phrases.
+  signature phrases. Use the measurements from 2a here.
 - **Sentences** — how are sentences built? Length variation, openers,
   coordination vs. subordination, punctuation rhythm, lists, parentheticals.
 - **Passages** — how does the writing hang together? Paragraph transitions,
@@ -176,7 +236,7 @@ only how the sentences are built.
 
 The user's own rules and requests always win over these instructions.
 
-## <family heading>
+## <level heading>
 
 * <instruction>
 
@@ -204,5 +264,22 @@ All examples grouped by proposition statement, focus sentences bolded.
 
 `[{ "label": "...", "wordCount": 123 }]` for each source used.
 
+### references/metrics.json
+
+The analyzer report from step 2a.
+
+### scripts/
+
+Copy this skill's `scripts/` folder into the generated skill so later passes
+can re-run the word-level measurements:
+
+```
+scripts/analyze-style.mjs
+scripts/style-metrics.mjs
+scripts/style-metric-registry.mjs
+scripts/style-data.json
+```
+
 After writing, tell the user their style skill is active and will load
-automatically in every Claude Code session.
+automatically in every Claude Code session. They can run this generator
+again to add a source or update the habits.
