@@ -23,28 +23,6 @@ claude plugin install docwriter-org/style
 Or just ask Claude to learn your writing style — the skill triggers
 automatically.
 
-## How analysis works
-
-After it has your sources, it scores word-level habits with a local script,
-then runs a multi-agent pass: words, sentences, and passages.
-
-```bash
-node skills/docwriter-style-generator/scripts/analyze-style.mjs \
-  --input sample.txt \
-  --words \
-  --measured
-```
-
-`--words` keeps the word-level scores. `--measured` drops zeros. Pass several
-`--input` files so the script sees the whole sample at once.
-
-The numbers are hints — complexity, formality, concreteness, contractions,
-signature phrases. Habits still have to be quoted from your sentences.
-
-```bash
-node tests/lexical-analysis.mjs
-```
-
 ## What it produces
 
 A separate skill at `~/.claude/skills/my-writing-style/`:
@@ -57,5 +35,5 @@ my-writing-style/
     examples.md         ← your passages with key sentences highlighted
     source-manifest.json
     metrics.json        ← word-level measurements
-  scripts/              ← analyzer, so you can re-run it on new drafts
+  scripts/              ← analyzer the skill runs
 ```
