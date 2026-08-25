@@ -4,13 +4,14 @@ Build a `my-writing-style` skill from your own prose.
 
 Give it a few pieces of your writing — local files, URLs, or pasted text — and
 it measures word-level habits, runs a multi-agent pass over words, sentences,
-and passages, checks each habit with you, and writes a skill to
-`~/.claude/skills/my-writing-style/` that Claude Code loads automatically in
-every project.
+and passages, checks each habit with you, and writes a skill that Claude Code
+and Codex load automatically.
 
 ## Install
 
 Add the marketplace, then install the plugin.
+
+### Claude Code
 
 From a Claude Code session:
 
@@ -26,6 +27,23 @@ claude plugin marketplace add docwriter-org/style
 claude plugin install docwriter-style-generator@docwriter-style
 ```
 
+### Codex
+
+From a Codex session:
+
+```
+/plugins
+```
+
+Add marketplace `docwriter-org/style`, then install `docwriter-style-generator`.
+
+From the terminal:
+
+```bash
+codex plugin marketplace add docwriter-org/style
+codex plugin add docwriter-style-generator@docwriter-style
+```
+
 
 ## Use
 
@@ -38,7 +56,8 @@ automatically. Run it again to add a source or update the habits.
 
 ## What it produces
 
-A separate skill at `~/.claude/skills/my-writing-style/`:
+A separate skill at `~/.claude/skills/my-writing-style/` (Claude Code) and
+`~/.agents/skills/my-writing-style/` (Codex):
 
 ```
 my-writing-style/

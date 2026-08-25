@@ -1,0 +1,21 @@
+{
+  "name": "docwriter-style-generator",
+  "version": "1.0.0",
+  "description": "Learn a writing style from samples and produce a portable my-writing-style skill",
+  "author": {
+    "name": "DocWriter",
+    "url": "https://github.com/docwriter-org/style"
+  },
+  "homepage": "https://github.com/docwriter-org/style",
+  "repository": "https://github.com/docwriter-org/style",
+  "keywords": ["writing", "style", "skill"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "DocWriter style generator",
+    "shortDescription": "Learn a writing style from your own prose",
+    "longDescription": "Measure word-level habits, run a multi-agent pass over words, sentences, and passages, and write a portable my-writing-style skill.",
+    "developerName": "DocWriter",
+    "category": "Productivity",
+    "websiteURL": "https://github.com/docwriter-org/style"
+  }
+}
