@@ -870,9 +870,10 @@ async function cli() {
 	const output = flagValues(args, '--output')[0];
 	const role = flagValues(args, '--role')[0] ?? 'authored';
 	const families = flagValues(args, '--family');
+	if (args.includes('--words') && !families.includes('lexical')) families.push('lexical');
 	const measuredOnly = args.includes('--measured');
 	if (!inputs.length) {
-		throw new Error('Usage: analyze-style.mjs --input <file> [--input <file> ...] [--output <file>] [--role authored|inspiration] [--family lexical] [--measured]');
+		throw new Error('Usage: analyze-style.mjs --input <file> [--input <file> ...] [--output <file>] [--role authored|inspiration] [--words] [--measured]');
 	}
 	const documents = [];
 	for (const path of inputs) {

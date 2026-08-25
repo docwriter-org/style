@@ -26,7 +26,7 @@ function families(report) {
 	return new Set(report.measurements.map((measurement) => measurement.family));
 }
 
-const lexical = run(['--input', fixture, '--family', 'lexical', '--measured']);
+const lexical = run(['--input', fixture, '--words', '--measured']);
 if (!families(lexical).has('lexical')) throw new Error('lexical family missing from --family lexical output');
 if ([...families(lexical)].some((family) => family !== 'lexical')) {
 	throw new Error(`expected only lexical measurements, got ${[...families(lexical)]}`);
@@ -48,7 +48,7 @@ const scratch = mkdtempSync(join(tmpdir(), 'style-lexical-'));
 try {
 	const extra = join(scratch, 'second.txt');
 	writeFileSync(extra, second, 'utf8');
-	const corpus = run(['--input', fixture, '--input', extra, '--family', 'lexical', '--measured']);
+	const corpus = run(['--input', fixture, '--input', extra, '--words', '--measured']);
 	if (corpus.documents.length !== 2) throw new Error(`expected 2 documents, got ${corpus.documents.length}`);
 	if (!ids(corpus).has('lexical.a1.hapax-rate')) throw new Error('corpus lexical.a1.hapax-rate missing');
 	if (!ids(corpus).has('lexical.a1.signature-ngrams')) throw new Error('corpus lexical.a1.signature-ngrams missing');
@@ -63,13 +63,16 @@ if (!['lexical', 'grammatical', 'figures', 'cohesion-context'].every((family) =>
 
 const skill = readFileSync(join(root, 'skills/docwriter-style-generator/SKILL.md'), 'utf8');
 for (const needle of [
-	'Lexical analysis (required)',
+	'Word-level measurements',
 	'scripts/analyze-style.mjs',
-	'--family lexical',
-	'A1 general lexis',
-	'family `lexical`'
+	'--words',
+	'Words and phrases',
+	'no specialist agents'
 ]) {
 	if (!skill.includes(needle)) throw new Error(`SKILL.md is missing ${needle}`);
+}
+if (skill.includes('### 2b. Specialists') || skill.includes('lexis specialist') || skill.includes('Leech and Short')) {
+	throw new Error('SKILL.md still describes specialist agents');
 }
 
 process.stdout.write(`ok: ${lexical.measurements.length} measured lexical metrics, ${full.measurements.length} measured metrics across four families\n`);

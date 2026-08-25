@@ -1,19 +1,23 @@
 ---
 name: docwriter-style-generator
 description: >-
-  Build a writing style skill from your own prose. Runs lexical analysis plus
-  sentence and passage specialists, then produces a portable my-writing-style
-  skill that Claude Code loads automatically. Run /docwriter-style-generator to
-  start, or let it trigger when you ask to learn or build a writing style.
+  Build a writing style skill from your own prose. Measures word-level habits,
+  then reads the writing at the sentence and passage level, and produces a
+  portable my-writing-style skill that Claude Code loads automatically. Run
+  /docwriter-style-generator to start, or let it trigger when you ask to learn
+  or build a writing style.
 ---
 
 # Build a writing style skill
 
-This skill is a generator. It reads your writing, measures lexical habits with
-the bundled analyzer, distills those habits, checks each one with you, and
-writes a separate `my-writing-style` skill to
+This skill is a generator. It reads your writing, measures word-level habits
+with the bundled analyzer, distills those habits, checks each one with you,
+and writes a separate `my-writing-style` skill to
 `~/.claude/skills/my-writing-style/` that Claude Code picks up automatically in
 every project.
+
+Do this in one conversation. Do not spawn specialist agents, named reviewers,
+or extra subagents for lexis, grammar, or discourse.
 
 If `~/.claude/skills/my-writing-style/SKILL.md` already exists, ask:
 
@@ -68,77 +72,45 @@ AskUserQuestion:
 
 ## 2. Analyze
 
-Do not jump straight to impressions of word choice. First measure the writing,
-then read it. The lexical pass is the measurement step — without it the
-word-level habits are guesses.
+Do not jump straight to impressions of word choice. Measure first, then read.
 
-### 2a. Lexical analysis (required)
+### 2a. Word-level measurements
 
-This skill ships a deterministic analyzer next to this file:
-
-`scripts/analyze-style.mjs`
-
-It scores the Leech and Short *Style in Fiction* checklist. Lexical metrics
-are the `lexical.*` family:
-
-- **A1 general lexis** — complexity, formality, concreteness, contractions,
-  idioms, rare words, hapax, MATTR, lexical density, signature n-grams
-- **A2 nouns** — abstract nouns, proper nouns
-- **A3 adjectives** — rate, intensifiers, attributive vs predicative
-- **A4 verbs** — stative, transitive, factive
-- **A5 adverbs** — -ly adverbs, stance, hedges, boosters, discourse markers
-
-Steps:
-
-1. Write each cleaned source to its own temp file.
-2. Find this skill's directory (the folder that contains this `SKILL.md`).
-3. Run the analyzer on every source in one invocation so corpus metrics
-   (hapax rate, signature n-grams) see the whole sample:
+This skill ships `scripts/analyze-style.mjs` next to this file. Run it on
+every cleaned source in one invocation:
 
 ```bash
 node scripts/analyze-style.mjs \
   --input /tmp/source-1.txt \
   --input /tmp/source-2.txt \
   --output /tmp/style-report.json \
+  --words \
   --measured
 ```
 
-Use `--family lexical` when you only need the lexis slice. Omit it to keep
-grammatical, figures, and cohesion measurements for the other specialists.
+`--words` keeps word-level scores. `--measured` drops zeros. A zero is not
+evidence of a habit — do not invent absences from missing metrics.
 
-4. Read `/tmp/style-report.json`. `--measured` already dropped zeros. A zero
-   is not evidence of a habit — do not invent absences from missing metrics.
-5. Tell the user you finished lexical analysis and how many lexical
-   measurements fired before opening the specialist forks.
+The report is a hint for where to look: plain vs complex words, formal vs
+casual, concrete vs abstract, contractions, hedges, signature phrases. Never
+copy a rate or score into a proposition.
 
-Treat the numbers as hints for where to look. Never copy a rate or score into
-a proposition statement.
+Tell the user you finished the word-level measurements, then keep going in
+this same conversation.
 
-`compromise` is optional. If it is installed, a few POS-backed metrics get
-sharper; the rest of the lexical checklist still runs without it.
+### 2b. Read the prose
 
-### 2b. Specialists
+Read all the sources. Find habits at three levels. You can think about them
+in parallel, but you do the reading — no specialist agents:
 
-Read all the sources. Find habits at three levels by running three parallel
-Agent forks. Give each fork the filtered measurements for its families plus
-the source texts.
-
-- **Lexis (words)** — family `lexical`. Unit of analysis: the word and short
-  phrase. Ask what words this person reaches for: plain or complex, formal or
-  conversational, concrete or abstract, neutral or judgmental, common or
-  specialized. Look for contractions, nominalizations, idioms, signature
-  phrases, adjective and verb choices, hedges, boosters, and stance words. Do
-  not make claims about sentence construction, punctuation, or paragraph
-  linkage.
-- **Grammar (sentences)** — family `grammatical`. Unit of analysis: the
-  sentence and clause. Ask how sentences are built: length variation, openers,
+- **Words and phrases** — what words does this person reach for? Plain or
+  complex, concrete or abstract, formal or casual. Contractions, hedges,
+  signature phrases. Use the measurements from 2a here.
+- **Sentences** — how are sentences built? Length variation, openers,
   coordination vs. subordination, punctuation rhythm, lists, parentheticals.
-  Do not make claims about vocabulary as such or about links across
-  paragraphs.
-- **Discourse (passages)** — families `figures` and `cohesion-context`. Unit
-  of analysis: the paragraph and passage. Ask how the writing hangs together:
-  paragraph transitions, parallelism, reader address, first person, stance,
-  quotes and citations. Do not make claims about isolated word choice.
+- **Passages** — how does the writing hang together? Paragraph transitions,
+  parallelism, reader address, first person, stance, how other voices
+  (quotes, citations) are handled.
 
 Then merge: drop duplicates, drop vague advice any writer follows, drop
 anything that leans on boilerplate rather than prose. Reword anything that
@@ -151,7 +123,6 @@ Tell the user how many habits you found before moving to calibration.
 
 ```json
 {
-  "family": "lexical",
   "statement": "the habit, one sentence",
   "instruction": "what to do when writing (imperative)",
   "examples": ["verbatim passage 1", "verbatim passage 2", "verbatim passage 3"],
@@ -162,8 +133,6 @@ Tell the user how many habits you found before moving to calibration.
   }
 }
 ```
-
-`family` is one of `lexical`, `grammatical`, `figures`, `cohesion-context`.
 
 Rules that matter:
 
@@ -240,7 +209,7 @@ only how the sentences are built.
 
 The user's own rules and requests always win over these instructions.
 
-## <family heading>
+## <level heading>
 
 * <instruction>
 
@@ -250,11 +219,10 @@ The user's own rules and requests always win over these instructions.
 
   > <another example>
 
-(repeat for each proposition, grouped by family: lexical, grammatical,
-figures, cohesion-context)
+(repeat for each proposition, grouped by level: words, sentences, passages)
 ```
 
-Group propositions by family. Three longest examples per proposition, longest
+Group propositions by level. Three longest examples per proposition, longest
 first. Bold the focus sentence in each.
 
 ### references/propositions.json
@@ -271,13 +239,12 @@ All examples grouped by proposition statement, focus sentences bolded.
 
 ### references/metrics.json
 
-The analyzer report from step 2a (measurements and conventions). This is how
-the lexical analysis travels with the skill.
+The analyzer report from step 2a.
 
 ### scripts/
 
 Copy this skill's `scripts/` folder into the generated skill so later passes
-can re-run lexical analysis on new drafts:
+can re-run the word-level measurements:
 
 ```
 scripts/analyze-style.mjs
