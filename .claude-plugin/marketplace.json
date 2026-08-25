@@ -1,0 +1,13 @@
+{
+  "name": "docwriter-style",
+  "owner": {
+    "name": "DocWriter"
+  },
+  "plugins": [
+    {
+      "name": "docwriter-style-generator",
+      "source": "./",
+      "description": "Learn a writing style from samples and produce a portable my-writing-style skill"
+    }
+  ]
+}
