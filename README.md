@@ -88,7 +88,7 @@ A separate skill at `~/.claude/skills/my-writing-style/` (Claude Code) and
 ```
 my-writing-style/
   SKILL.md              ← "write like this person" instructions
-  sources/              ← cleaned writing samples
+  sources/              ← your writing, stored verbatim
   references/
     propositions.json   ← the habit data
     examples.md         ← your passages with key sentences highlighted

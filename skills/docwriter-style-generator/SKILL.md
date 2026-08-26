@@ -74,21 +74,44 @@ AskUserQuestion:
       description: "Some files, some URLs, some pasted"
 ```
 
-Based on their answer, ask for the paths/URLs/text. Read files with Read,
-fetch URLs with WebFetch (extract the article body, strip nav/menus/footers/
-cookie banners/bylines). Label each source by what the user calls it.
+Based on their answer, ask for the paths/URLs/text. Label each source by
+what the user calls it.
 
-Write each cleaned source into the style skill, not `/tmp`. Create the
-directories if they do not exist:
+**Sources must be the author's words, verbatim.** Do not paraphrase,
+summarize, tidy, or rewrite. The later analysis quotes these files word
+for word — a summary is the wrong sample.
+
+Do not use WebFetch to produce a stored source. WebFetch often returns a
+digest. This skill ships `scripts/save-source.mjs` next to this file.
+Run it once per piece so the write is a copy, not a rewrite:
+
+```bash
+# local file
+node scripts/save-source.mjs --label essay --file /path/to/essay.txt
+
+# pasted text
+node scripts/save-source.mjs --label talk --stdin
+# then pipe or type the paste; do not reword it
+
+# URL — fetches the page and strips nav/chrome only
+node scripts/save-source.mjs --label post --url https://example.com/essay
+```
+
+The script writes the same file to both homes:
 
 ```
 ~/.claude/skills/my-writing-style/sources/<label>.txt
 ~/.agents/skills/my-writing-style/sources/<label>.txt
 ```
 
-Use the user's label as the filename (safe slug). On a rebuild, replace
-`sources/` so leftover pieces from the last run do not stay in the sample.
-When adding a source, leave the existing files alone.
+After each save, show the user the script's `First:` / `Last:` lines and
+word count, and ask whether that is their writing. If they say no, or if
+a URL extract errors as too short, ask for a local file or a paste of
+the full piece. Do not invent the missing text.
+
+On a rebuild, replace `sources/` so leftover pieces from the last run do
+not stay in the sample. When adding a source, leave the existing files
+alone.
 
 After gathering, confirm:
 
@@ -173,8 +196,10 @@ Tell the user how many habits you found before moving to calibration.
 
 Rules that matter:
 
-- **Examples must be verbatim.** Copy word for word from the sources. No
-  invention. If you cannot find three real examples, drop the proposition.
+- **Examples must be verbatim.** Copy word for word from the `sources/`
+  files. Each example must appear as a contiguous substring of a saved
+  source. No invention, paraphrase, or tidy-up. If you cannot find three
+  real examples, drop the proposition.
 - **Examples are passages, not sentences.** Quote 3-4 consecutive sentences
   so the reader sees the habit in context. Set the focus to the one sentence
   the habit is actually about.
@@ -285,6 +310,7 @@ can re-run the word-level measurements:
 
 ```
 scripts/analyze-style.mjs
+scripts/save-source.mjs
 scripts/style-metrics.mjs
 scripts/style-metric-registry.mjs
 scripts/style-data.json
